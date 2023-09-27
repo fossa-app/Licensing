@@ -1,0 +1,13 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup Label="Build">
+    <TargetFramework>net7.0</TargetFramework>
+  </PropertyGroup>
+
+  <PropertyGroup Label="Package">
+    <Product>Fossa Licensing</Product>
+    <Description>Fossa Licensing</Description>
+    <PackageTags>Fossa;Licensing</PackageTags>
+  </PropertyGroup>
+
+</Project>
