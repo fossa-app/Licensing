@@ -1,7 +1,9 @@
 namespace Fossa.Licensing;
 
+using System.Globalization;
 using LanguageExt;
 using LanguageExt.Common;
+using TIKSN.Deployment;
 using TIKSN.Licensing;
 
 /// <summary>
@@ -24,26 +26,25 @@ public class SystemEntitlementsConverter : IEntitlementsConverter<SystemEntitlem
         if (entitlements == null)
         {
             errors.Add(Error.New(1272977306, "Value must not be NULL"));
+            return errors.ToSeq();
+        }
+
+        if (string.IsNullOrWhiteSpace(entitlements.EnvironmentName.ToString()))
+        {
+            errors.Add(Error.New(1410594292, "Environment Name is missing"));
         }
         else
         {
-            if (string.IsNullOrWhiteSpace(entitlements.EnvironmentName))
-            {
-                errors.Add(Error.New(1410594292, "Environment Name is missing"));
-            }
-            else
-            {
-                result.EnvironmentName = entitlements.EnvironmentName;
-            }
+            result.EnvironmentName = entitlements.EnvironmentName.ToString();
+        }
 
-            if (entitlements.MaximumCompanyCount <= 0)
-            {
-                errors.Add(Error.New(1390645275, "Maximum Company Count is invalid"));
-            }
-            else
-            {
-                result.MaximumCompanyCount = entitlements.MaximumCompanyCount;
-            }
+        if (entitlements.MaximumCompanyCount <= 0)
+        {
+            errors.Add(Error.New(1390645275, "Maximum Company Count is invalid"));
+        }
+        else
+        {
+            result.MaximumCompanyCount = entitlements.MaximumCompanyCount;
         }
 
         if (errors.Count > 0)
@@ -82,13 +83,23 @@ public class SystemEntitlementsConverter : IEntitlementsConverter<SystemEntitlem
             errors.Add(Error.New(391605441, "Maximum Company Count is invalid"));
         }
 
+        var environmentName =
+            EnvironmentName.Parse(entitlementsData.EnvironmentName, asciiOnly: true, CultureInfo.InvariantCulture);
+
+        if (environmentName.IsNone)
+        {
+            errors.Add(Error.New(1804391968, "Environment Name is invalid"));
+        }
+
+        var environmentNameValue = environmentName.Match(s => s, () => throw new InvalidOperationException());
+
         if (errors.Count > 0)
         {
             return errors.ToSeq();
         }
 
         return new SystemEntitlements(
-            entitlementsData.EnvironmentName,
+            environmentNameValue,
             entitlementsData.MaximumCompanyCount);
     }
 }
