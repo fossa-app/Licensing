@@ -11,3 +11,4 @@ Function gig {
 
 gig -list visualstudio, visualstudiocode, fsharp, powershell, macos, intellij+all
 Write-Output '.trash' | Out-File -Append -FilePath .\.gitignore -Encoding ascii
+Write-Output 'Artefacts/' | Out-File -Append -FilePath .\.gitignore -Encoding ascii
