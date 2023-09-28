@@ -8,6 +8,7 @@
     <Nullable>enable</Nullable>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     <RootNamespace>Fossa.$(MSBuildProjectName.Replace(" ", "_"))</RootNamespace>
+    <AssemblyName>Fossa.$(MSBuildProjectName)</AssemblyName>
   </PropertyGroup>
 
   <PropertyGroup Label="Package">
