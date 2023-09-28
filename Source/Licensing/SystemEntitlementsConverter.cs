@@ -5,12 +5,16 @@ using LanguageExt;
 using LanguageExt.Common;
 using TIKSN.Deployment;
 using TIKSN.Licensing;
+using static LanguageExt.Prelude;
 
 /// <summary>
 /// System Entitlements Converter.
 /// </summary>
 public class SystemEntitlementsConverter : IEntitlementsConverter<SystemEntitlements, SystemLicenseEntitlements>
 {
+    private static readonly Seq<Ulid> InvalidSystemIds =
+        Seq(Ulid.Empty, Ulid.MinValue, Ulid.MaxValue);
+
     /// <summary>
     /// Convert from Domain Model to Data Model.
     /// </summary>
@@ -28,6 +32,13 @@ public class SystemEntitlementsConverter : IEntitlementsConverter<SystemEntitlem
             errors.Add(Error.New(1272977306, "Value must not be NULL"));
             return errors.ToSeq();
         }
+
+        if (InvalidSystemIds.Contains(entitlements.SystemId))
+        {
+            errors.Add(Error.New(1366359375, "Invalid System ID"));
+        }
+
+        result.SystemId = new ArraySegment<byte>(entitlements.SystemId.ToByteArray());
 
         if (string.IsNullOrWhiteSpace(entitlements.EnvironmentName.ToString()))
         {
@@ -73,6 +84,13 @@ public class SystemEntitlementsConverter : IEntitlementsConverter<SystemEntitlem
             return errors.ToSeq();
         }
 
+        var systemId = new Ulid(entitlementsData.SystemId);
+
+        if (InvalidSystemIds.Contains(systemId))
+        {
+            errors.Add(Error.New(670425534, "Invalid System ID"));
+        }
+
         if (string.IsNullOrWhiteSpace(entitlementsData.EnvironmentName))
         {
             errors.Add(Error.New(429642749, "Environment Name is missing"));
@@ -99,6 +117,7 @@ public class SystemEntitlementsConverter : IEntitlementsConverter<SystemEntitlem
         }
 
         return new SystemEntitlements(
+            systemId,
             environmentNameValue,
             entitlementsData.MaximumCompanyCount);
     }

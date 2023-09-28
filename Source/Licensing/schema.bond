@@ -3,6 +3,7 @@ namespace Fossa.Licensing
 
 struct SystemLicenseEntitlements
 {
-    0: string EnvironmentName;
-    1: int32 MaximumCompanyCount;
+    0: blob SystemId;
+    1: string EnvironmentName;
+    2: int32 MaximumCompanyCount;
 }
