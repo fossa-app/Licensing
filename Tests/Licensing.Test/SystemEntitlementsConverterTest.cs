@@ -18,7 +18,7 @@ public class SystemEntitlementsConverterTest
     {
         var services = new ServiceCollection();
         _ = services.AddLicense();
-        _ = services.AddFrameworkPlatform();
+        _ = services.AddFrameworkCore();
 
         var fakeTimeProvider = Substitute.For<ITimeProvider>();
         _ = fakeTimeProvider.GetCurrentTime()
@@ -27,7 +27,6 @@ public class SystemEntitlementsConverterTest
 
         ContainerBuilder containerBuilder = new();
         _ = containerBuilder.RegisterModule<CoreModule>();
-        _ = containerBuilder.RegisterModule<PlatformModule>();
         containerBuilder.Populate(services);
 
         this.serviceProvider = new AutofacServiceProvider(containerBuilder.Build());
