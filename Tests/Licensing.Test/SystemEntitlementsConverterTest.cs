@@ -4,10 +4,9 @@ using Autofac;
 using Autofac.Extensions.DependencyInjection;
 using FluentAssertions;
 using Microsoft.Extensions.DependencyInjection;
-using NSubstitute;
+using Microsoft.Extensions.Time.Testing;
 using TIKSN.DependencyInjection;
 using TIKSN.Licensing;
-using TIKSN.Time;
 using Xunit;
 
 public class SystemEntitlementsConverterTest
@@ -20,9 +19,8 @@ public class SystemEntitlementsConverterTest
         _ = services.AddLicense();
         _ = services.AddFrameworkCore();
 
-        var fakeTimeProvider = Substitute.For<ITimeProvider>();
-        _ = fakeTimeProvider.GetCurrentTime()
-            .Returns(new DateTimeOffset(2022, 9, 24, 0, 0, 0, TimeSpan.Zero));
+        var fakeTimeProvider = new FakeTimeProvider(
+            new DateTimeOffset(2022, 9, 24, 0, 0, 0, TimeSpan.Zero));
         _ = services.AddSingleton(fakeTimeProvider);
 
         ContainerBuilder containerBuilder = new();
@@ -33,7 +31,7 @@ public class SystemEntitlementsConverterTest
     }
 
     [Fact]
-    public void Given_When_Then()
+    public void GivenRegisteredServices_WhenSystemLicenseFactoryRequested_ThenServiceShouldBeResolved()
     {
         // Arrange
 
