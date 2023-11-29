@@ -4,6 +4,7 @@ using System.Globalization;
 using LanguageExt;
 using LanguageExt.Common;
 using TIKSN.Deployment;
+using TIKSN.Globalization;
 using TIKSN.Licensing;
 using static LanguageExt.Prelude;
 
@@ -14,6 +15,17 @@ public class SystemEntitlementsConverter : IEntitlementsConverter<SystemEntitlem
 {
     private static readonly Seq<Ulid> InvalidSystemIds =
         Seq(Ulid.Empty, Ulid.MinValue, Ulid.MaxValue);
+
+    private readonly IRegionFactory regionFactory;
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="SystemEntitlementsConverter"/> class.
+    /// </summary>
+    /// <param name="regionFactory"><see cref="RegionInfo"/> Factory.</param>
+    [CLSCompliant(false)]
+    public SystemEntitlementsConverter(
+        IRegionFactory regionFactory)
+        => this.regionFactory = regionFactory ?? throw new ArgumentNullException(nameof(regionFactory));
 
     /// <summary>
     /// Convert from Domain Model to Data Model.
@@ -58,6 +70,19 @@ public class SystemEntitlementsConverter : IEntitlementsConverter<SystemEntitlem
             result.MaximumCompanyCount = entitlements.MaximumCompanyCount;
         }
 
+        if (entitlements.Countries.Count == 0)
+        {
+            errors.Add(Error.New(1863106995, "Countries most not be empty"));
+        }
+        else
+        {
+            entitlements.Countries.ForEach(x => this.ValidateCountryCode(x, errors.Add));
+
+#pragma warning disable SA1010 // Opening square brackets should be spaced correctly
+            result.CountryCodes = [.. entitlements.Countries.Select(x => x.TwoLetterISORegionName)];
+#pragma warning restore SA1010 // Opening square brackets should be spaced correctly
+        }
+
         if (errors.Count > 0)
         {
             return errors.ToSeq();
@@ -77,7 +102,7 @@ public class SystemEntitlementsConverter : IEntitlementsConverter<SystemEntitlem
     {
         var errors = new List<Error>();
 
-        if (entitlementsData == null)
+        if (entitlementsData is null)
         {
             errors.Add(Error.New(253116444, "Value must not be NULL"));
 
@@ -111,6 +136,19 @@ public class SystemEntitlementsConverter : IEntitlementsConverter<SystemEntitlem
 
         var environmentNameValue = environmentName.Match(s => s, () => throw new InvalidOperationException());
 
+        if (entitlementsData.CountryCodes is null || entitlementsData.CountryCodes.Count == 0)
+        {
+            errors.Add(Error.New(1752177083, "Country Codes is missing"));
+        }
+        else
+        {
+            entitlementsData.CountryCodes.ForEach(x => this.ValidateCountryCode(x, errors.Add));
+        }
+
+        var countries = (entitlementsData.CountryCodes ?? new List<string>())
+            .Select(x => this.CreateRegion(x, errors.Add))
+            .ToSeq();
+
         if (errors.Count > 0)
         {
             return errors.ToSeq();
@@ -119,6 +157,53 @@ public class SystemEntitlementsConverter : IEntitlementsConverter<SystemEntitlem
         return new SystemEntitlements(
             systemId,
             environmentNameValue,
-            entitlementsData.MaximumCompanyCount);
+            entitlementsData.MaximumCompanyCount,
+            countries);
+    }
+
+    private RegionInfo CreateRegion(string? name, Action<Error> addError)
+    {
+        this.ValidateCountryCode(name, addError);
+
+        try
+        {
+            return this.regionFactory.Create(name);
+        }
+        catch (ArgumentException)
+        {
+            return this.regionFactory.Create("001");
+        }
+    }
+
+    private void ValidateCountryCode(RegionInfo? country, Action<Error> addError)
+        => this.ValidateCountryCode(country?.TwoLetterISORegionName, addError);
+
+    private void ValidateCountryCode(string? code, Action<Error> addError)
+    {
+        if (string.IsNullOrWhiteSpace(code))
+        {
+            addError(Error.New(253163448, "Country Code is missing"));
+        }
+        else if (code.Length < 2)
+        {
+            addError(Error.New(1280422427, "Country Code is too short"));
+        }
+        else if (code.Length > 2)
+        {
+            addError(Error.New(1165853056, "Country Code is too long"));
+        }
+        else if (!code.All(char.IsAsciiLetterUpper))
+        {
+            addError(Error.New(1638279115, "Country Code must contain only upper case ASCII letters"));
+        }
+
+        try
+        {
+            _ = this.regionFactory.Create(code);
+        }
+        catch (ArgumentException)
+        {
+            addError(Error.New(111865750, "Country Code is invalid"));
+        }
     }
 }
