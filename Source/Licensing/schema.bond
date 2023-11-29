@@ -6,4 +6,5 @@ struct SystemLicenseEntitlements
     0: blob SystemId;
     1: string EnvironmentName;
     2: int32 MaximumCompanyCount;
+    3: vector<string> CountryCodes;
 }
