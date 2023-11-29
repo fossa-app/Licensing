@@ -1,5 +1,7 @@
 namespace Fossa.Licensing;
 
+using System.Globalization;
+using LanguageExt;
 using TIKSN.Deployment;
 
 /// <summary>
@@ -8,8 +10,10 @@ using TIKSN.Deployment;
 /// <param name="SystemId">System ID.</param>
 /// <param name="EnvironmentName">Deployment environment name.</param>
 /// <param name="MaximumCompanyCount">Maximum Company Count.</param>
+/// <param name="Countries">Supported Countries.</param>
 [CLSCompliant(false)]
 public record SystemEntitlements(
     Ulid SystemId,
     EnvironmentName EnvironmentName,
-    int MaximumCompanyCount);
+    int MaximumCompanyCount,
+    Seq<RegionInfo> Countries);
