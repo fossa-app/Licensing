@@ -9,11 +9,11 @@ using TIKSN.DependencyInjection;
 using TIKSN.Licensing;
 using Xunit;
 
-public class SystemEntitlementsConverterTest
+public class SystemLicenseFactoryTests
 {
     private readonly IServiceProvider serviceProvider;
 
-    public SystemEntitlementsConverterTest()
+    public SystemLicenseFactoryTests()
     {
         var services = new ServiceCollection();
         _ = services.AddLicense();
