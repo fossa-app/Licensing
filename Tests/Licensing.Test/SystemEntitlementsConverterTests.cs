@@ -58,7 +58,7 @@ public class SystemEntitlementsConverterTests
         // Assert
 
         _ = validation.IsSuccess.Should().Be(isValid);
-        validation.IfSuccess(x =>
+        _ = validation.IfSuccess(x =>
         {
             _ = x.CountryCodes.Count.Should().Be(1);
             _ = x.CountryCodes.Single().Should().Be(country.TwoLetterISORegionName);
