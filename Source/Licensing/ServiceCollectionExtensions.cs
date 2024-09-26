@@ -30,6 +30,21 @@ public static class ServiceCollectionExtensions
                 ILicenseDescriptor<SystemEntitlements>,
                 SystemLicenseDescriptor>();
 
+        _ = services
+            .AddSingleton<
+                ILicenseFactory<CompanyEntitlements, CompanyLicenseEntitlements>,
+                LicenseFactory<CompanyEntitlements, CompanyLicenseEntitlements>>();
+
+        _ = services
+            .AddSingleton<
+                IEntitlementsConverter<CompanyEntitlements, CompanyLicenseEntitlements>,
+                CompanyEntitlementsConverter>();
+
+        _ = services
+            .AddSingleton<
+                ILicenseDescriptor<CompanyEntitlements>,
+                CompanyLicenseDescriptor>();
+
         return services;
     }
 }
