@@ -40,7 +40,6 @@ public class SystemLicenseFactoryTests
         // Act
 
         // Assert
-
-        _ = systemLicenseFactory.Should().NotBeNull();
+        Assert.NotNull(systemLicenseFactory);
     }
 }

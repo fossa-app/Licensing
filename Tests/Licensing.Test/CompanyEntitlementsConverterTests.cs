@@ -40,7 +40,6 @@ public class CompanyEntitlementsConverterTests
         // Act
 
         // Assert
-
-        _ = companyEntitlementsConverter.Should().NotBeNull();
+        Assert.NotNull(companyEntitlementsConverter);
     }
 }

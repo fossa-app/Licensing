@@ -1,4 +1,4 @@
-﻿namespace Fossa.Licensing.Test;
+namespace Fossa.Licensing.Test;
 
 using Autofac;
 using Autofac.Extensions.DependencyInjection;
@@ -40,7 +40,6 @@ public class CompanyLicenseFactoryTests
         // Act
 
         // Assert
-
-        _ = companyLicenseFactory.Should().NotBeNull();
+        Assert.NotNull(companyLicenseFactory);
     }
 }
