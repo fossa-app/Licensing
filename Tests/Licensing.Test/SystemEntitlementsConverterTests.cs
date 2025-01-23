@@ -3,7 +3,6 @@ namespace Fossa.Licensing.Test;
 using System.Globalization;
 using Autofac;
 using Autofac.Extensions.DependencyInjection;
-using FluentAssertions;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Time.Testing;
 using TIKSN.DependencyInjection;
@@ -57,11 +56,11 @@ public class SystemEntitlementsConverterTests
 
         // Assert
 
-        _ = validation.IsSuccess.Should().Be(isValid);
+        Assert.Equal(isValid, validation.IsSuccess);
         _ = validation.IfSuccess(x =>
         {
-            _ = x.CountryCodes.Count.Should().Be(1);
-            _ = x.CountryCodes.Single().Should().Be(country.TwoLetterISORegionName);
+            _ = Assert.Single(x.CountryCodes);
+            Assert.Equal(country.TwoLetterISORegionName, x.CountryCodes.Single());
         });
     }
 
@@ -77,6 +76,6 @@ public class SystemEntitlementsConverterTests
 
         // Assert
 
-        _ = systemEntitlementsConverter.Should().NotBeNull();
+        Assert.NotNull(systemEntitlementsConverter);
     }
 }

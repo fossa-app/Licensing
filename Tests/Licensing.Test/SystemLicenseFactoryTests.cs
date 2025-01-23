@@ -2,7 +2,6 @@ namespace Fossa.Licensing.Test;
 
 using Autofac;
 using Autofac.Extensions.DependencyInjection;
-using FluentAssertions;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Time.Testing;
 using TIKSN.DependencyInjection;
@@ -41,7 +40,6 @@ public class SystemLicenseFactoryTests
         // Act
 
         // Assert
-
-        _ = systemLicenseFactory.Should().NotBeNull();
+        Assert.NotNull(systemLicenseFactory);
     }
 }
