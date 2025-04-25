@@ -83,6 +83,15 @@ public class CompanyEntitlementsConverter : IEntitlementsConverter<CompanyEntitl
             result.MaximumEmployeeCount = entitlements.MaximumEmployeeCount;
         }
 
+        if (entitlements.MaximumDepartmentCount <= 0)
+        {
+            errors.Add(Error.New(41537942, "Maximum Department Count is invalid"));
+        }
+        else
+        {
+            result.MaximumDepartmentCount = entitlements.MaximumDepartmentCount;
+        }
+
         if (errors.Count > 0)
         {
             return errors.ToSeq();
@@ -131,6 +140,11 @@ public class CompanyEntitlementsConverter : IEntitlementsConverter<CompanyEntitl
             errors.Add(Error.New(23275628, "Maximum Employee Count is invalid"));
         }
 
+        if (entitlementsData.MaximumDepartmentCount <= 0)
+        {
+            errors.Add(Error.New(41537900, "Maximum Department Count is invalid"));
+        }
+
         if (errors.Count > 0)
         {
             return errors.ToSeq();
@@ -140,6 +154,7 @@ public class CompanyEntitlementsConverter : IEntitlementsConverter<CompanyEntitl
             systemId,
             entitlementsData.CompanyId,
             entitlementsData.MaximumBranchCount,
-            entitlementsData.MaximumEmployeeCount);
+            entitlementsData.MaximumEmployeeCount,
+            entitlementsData.MaximumDepartmentCount);
     }
 }
