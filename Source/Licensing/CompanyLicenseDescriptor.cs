@@ -1,4 +1,4 @@
-﻿namespace Fossa.Licensing;
+namespace Fossa.Licensing;
 
 using System;
 using TIKSN.Licensing;
