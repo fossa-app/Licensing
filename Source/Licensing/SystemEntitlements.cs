@@ -11,7 +11,6 @@ using TIKSN.Deployment;
 /// <param name="EnvironmentName">Deployment environment name.</param>
 /// <param name="MaximumCompanyCount">Maximum Company Count.</param>
 /// <param name="Countries">Supported Countries.</param>
-[CLSCompliant(false)]
 public record SystemEntitlements(
     Ulid SystemId,
     EnvironmentName EnvironmentName,

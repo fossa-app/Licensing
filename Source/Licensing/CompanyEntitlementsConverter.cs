@@ -1,5 +1,6 @@
 namespace Fossa.Licensing;
 
+using Google.Protobuf;
 using LanguageExt;
 using LanguageExt.Common;
 using TIKSN.Licensing;
@@ -19,7 +20,6 @@ public class CompanyEntitlementsConverter : IEntitlementsConverter<CompanyEntitl
     /// <summary>
     /// Initializes a new instance of the <see cref="CompanyEntitlementsConverter"/> class.
     /// </summary>
-    [CLSCompliant(false)]
     public CompanyEntitlementsConverter()
     {
     }
@@ -29,7 +29,6 @@ public class CompanyEntitlementsConverter : IEntitlementsConverter<CompanyEntitl
     /// </summary>
     /// <param name="entitlements">Domain Model.</param>
     /// <returns>Validation of Data Model.</returns>
-    [CLSCompliant(false)]
     public Validation<Error, CompanyLicenseEntitlements> Convert(
         CompanyEntitlements entitlements)
     {
@@ -47,7 +46,7 @@ public class CompanyEntitlementsConverter : IEntitlementsConverter<CompanyEntitl
             errors.Add(Error.New(1366359375, "Invalid System ID"));
         }
 
-        result.SystemId = new ArraySegment<byte>(entitlements.SystemId.ToByteArray());
+        result.SystemId = ByteString.CopyFrom(entitlements.SystemId.ToByteArray());
 
         if (InvalidCompanyIds.Contains(entitlements.CompanyId) || entitlements.CompanyId <= 0)
         {
@@ -105,7 +104,6 @@ public class CompanyEntitlementsConverter : IEntitlementsConverter<CompanyEntitl
     /// </summary>
     /// <param name="entitlementsData">Data Model.</param>
     /// <returns>Validation of Domain Model.</returns>
-    [CLSCompliant(false)]
     public Validation<Error, CompanyEntitlements> Convert(
         CompanyLicenseEntitlements entitlementsData)
     {
@@ -118,7 +116,7 @@ public class CompanyEntitlementsConverter : IEntitlementsConverter<CompanyEntitl
             return errors.ToSeq();
         }
 
-        var systemId = new Ulid(entitlementsData.SystemId);
+        var systemId = new Ulid(entitlementsData.SystemId.ToByteArray());
 
         if (InvalidSystemIds.Contains(systemId))
         {

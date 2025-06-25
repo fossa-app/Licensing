@@ -8,7 +8,6 @@ namespace Fossa.Licensing;
 /// <param name="MaximumBranchCount">Maximum Branch Count.</param>
 /// <param name="MaximumEmployeeCount">Maximum Employee Count.</param>
 /// <param name="MaximumDepartmentCount">Maximum Department Count.</param>
-[CLSCompliant(false)]
 public record CompanyEntitlements(
     Ulid SystemId,
     long CompanyId,
