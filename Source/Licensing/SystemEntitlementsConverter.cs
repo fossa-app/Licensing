@@ -23,7 +23,6 @@ public class SystemEntitlementsConverter : IEntitlementsConverter<SystemEntitlem
     /// Initializes a new instance of the <see cref="SystemEntitlementsConverter"/> class.
     /// </summary>
     /// <param name="regionFactory"><see cref="RegionInfo"/> Factory.</param>
-    [CLSCompliant(false)]
     public SystemEntitlementsConverter(
         IRegionFactory regionFactory)
         => this.regionFactory = regionFactory ?? throw new ArgumentNullException(nameof(regionFactory));
@@ -33,7 +32,6 @@ public class SystemEntitlementsConverter : IEntitlementsConverter<SystemEntitlem
     /// </summary>
     /// <param name="entitlements">Domain Model.</param>
     /// <returns>Validation of Data Model.</returns>
-    [CLSCompliant(false)]
     public Validation<Error, SystemLicenseEntitlements> Convert(
         SystemEntitlements entitlements)
     {
@@ -97,7 +95,6 @@ public class SystemEntitlementsConverter : IEntitlementsConverter<SystemEntitlem
     /// </summary>
     /// <param name="entitlementsData">Data Model.</param>
     /// <returns>Validation of Domain Model.</returns>
-    [CLSCompliant(false)]
     public Validation<Error, SystemEntitlements> Convert(
         SystemLicenseEntitlements entitlementsData)
     {

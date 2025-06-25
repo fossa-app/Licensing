@@ -20,7 +20,6 @@ public class CompanyEntitlementsConverter : IEntitlementsConverter<CompanyEntitl
     /// <summary>
     /// Initializes a new instance of the <see cref="CompanyEntitlementsConverter"/> class.
     /// </summary>
-    [CLSCompliant(false)]
     public CompanyEntitlementsConverter()
     {
     }
@@ -30,7 +29,6 @@ public class CompanyEntitlementsConverter : IEntitlementsConverter<CompanyEntitl
     /// </summary>
     /// <param name="entitlements">Domain Model.</param>
     /// <returns>Validation of Data Model.</returns>
-    [CLSCompliant(false)]
     public Validation<Error, CompanyLicenseEntitlements> Convert(
         CompanyEntitlements entitlements)
     {
@@ -106,7 +104,6 @@ public class CompanyEntitlementsConverter : IEntitlementsConverter<CompanyEntitl
     /// </summary>
     /// <param name="entitlementsData">Data Model.</param>
     /// <returns>Validation of Domain Model.</returns>
-    [CLSCompliant(false)]
     public Validation<Error, CompanyEntitlements> Convert(
         CompanyLicenseEntitlements entitlementsData)
     {
