@@ -1,5 +1,6 @@
 namespace Fossa.Licensing;
 
+using Google.Protobuf;
 using LanguageExt;
 using LanguageExt.Common;
 using TIKSN.Licensing;
@@ -47,7 +48,7 @@ public class CompanyEntitlementsConverter : IEntitlementsConverter<CompanyEntitl
             errors.Add(Error.New(1366359375, "Invalid System ID"));
         }
 
-        result.SystemId = new ArraySegment<byte>(entitlements.SystemId.ToByteArray());
+        result.SystemId = ByteString.CopyFrom(entitlements.SystemId.ToByteArray());
 
         if (InvalidCompanyIds.Contains(entitlements.CompanyId) || entitlements.CompanyId <= 0)
         {
@@ -118,7 +119,7 @@ public class CompanyEntitlementsConverter : IEntitlementsConverter<CompanyEntitl
             return errors.ToSeq();
         }
 
-        var systemId = new Ulid(entitlementsData.SystemId);
+        var systemId = new Ulid(entitlementsData.SystemId.ToByteArray());
 
         if (InvalidSystemIds.Contains(systemId))
         {
