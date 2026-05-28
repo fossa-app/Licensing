@@ -3,16 +3,19 @@ namespace Fossa.Licensing.Test;
 using System.Globalization;
 using Autofac;
 using Autofac.Extensions.DependencyInjection;
+using LanguageExt;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Time.Testing;
 using TIKSN.DependencyInjection;
 using TIKSN.Deployment;
+using TIKSN.Globalization;
 using TIKSN.Licensing;
 using Xunit;
 using static LanguageExt.Prelude;
 
 public class SystemEntitlementsConverterTests
 {
+    private readonly ICountryFactory countryFactory;
     private readonly IServiceProvider serviceProvider;
 
     public SystemEntitlementsConverterTests()
@@ -30,11 +33,12 @@ public class SystemEntitlementsConverterTests
         containerBuilder.Populate(services);
 
         this.serviceProvider = new AutofacServiceProvider(containerBuilder.Build());
+        this.countryFactory = this.serviceProvider.GetRequiredService<ICountryFactory>();
     }
 
     [Theory]
     [InlineData("US", true)]
-    [InlineData("en-US", true)]
+    [InlineData("DE", true)]
     [InlineData("001", false)]
     [InlineData("en-001", false)]
     public void GivenCountryCode_WhenSystemEntitlementsConverted_Then(string countryCode, bool isValid)
@@ -46,7 +50,24 @@ public class SystemEntitlementsConverterTests
 
         var systemId = Ulid.NewUlid();
         var environmentName = EnvironmentName.Parse("Development", asciiOnly: true, CultureInfo.InvariantCulture).Single();
-        var country = new RegionInfo(countryCode);
+
+        Option<CountryInfo> maybeCountry;
+        try
+        {
+            maybeCountry = this.countryFactory.Create(countryCode);
+        }
+        catch (CountryNotFoundException)
+        {
+            maybeCountry = None;
+        }
+
+        if (maybeCountry.IsNone)
+        {
+            Assert.False(isValid);
+            return;
+        }
+
+        var country = maybeCountry.Single();
         var entitlements = new SystemEntitlements(
             systemId, environmentName, 10, Seq1(country));
 

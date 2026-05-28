@@ -1,8 +1,8 @@
 namespace Fossa.Licensing;
 
-using System.Globalization;
 using LanguageExt;
 using TIKSN.Deployment;
+using TIKSN.Globalization;
 
 /// <summary>
 /// System Entitlements.
@@ -15,4 +15,4 @@ public record SystemEntitlements(
     Ulid SystemId,
     EnvironmentName EnvironmentName,
     int MaximumCompanyCount,
-    Seq<RegionInfo> Countries);
+    Seq<CountryInfo> Countries);
