@@ -17,15 +17,15 @@ public class SystemEntitlementsConverter : IEntitlementsConverter<SystemEntitlem
     private static readonly Seq<Ulid> InvalidSystemIds =
         Seq(Ulid.Empty, Ulid.MinValue, Ulid.MaxValue);
 
-    private readonly IRegionFactory regionFactory;
+    private readonly ICountryFactory countryFactory;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="SystemEntitlementsConverter"/> class.
     /// </summary>
-    /// <param name="regionFactory"><see cref="RegionInfo"/> Factory.</param>
+    /// <param name="countryFactory"><see cref="CountryInfo"/> Factory.</param>
     public SystemEntitlementsConverter(
-        IRegionFactory regionFactory)
-        => this.regionFactory = regionFactory ?? throw new ArgumentNullException(nameof(regionFactory));
+        ICountryFactory countryFactory)
+        => this.countryFactory = countryFactory ?? throw new ArgumentNullException(nameof(countryFactory));
 
     /// <summary>
     /// Convert from Domain Model to Data Model.
@@ -144,7 +144,7 @@ public class SystemEntitlementsConverter : IEntitlementsConverter<SystemEntitlem
         }
 
         var countries = (entitlementsData.CountryCodes ?? [])
-            .Choose(x => this.CreateRegion(x, errors.Add))
+            .Choose(x => this.CreateCountry(x, errors.Add))
             .ToSeq();
 
         if (errors.Count > 0)
@@ -159,7 +159,7 @@ public class SystemEntitlementsConverter : IEntitlementsConverter<SystemEntitlem
             countries);
     }
 
-    private Option<RegionInfo> CreateRegion(string? name, Action<Error> addError)
+    private Option<CountryInfo> CreateCountry(string? name, Action<Error> addError)
     {
         this.ValidateCountryCode(name, addError);
 
@@ -167,7 +167,7 @@ public class SystemEntitlementsConverter : IEntitlementsConverter<SystemEntitlem
         {
             try
             {
-                return this.regionFactory.Create(name);
+                return this.countryFactory.Create(name);
             }
             catch (ArgumentException)
             {
@@ -179,7 +179,7 @@ public class SystemEntitlementsConverter : IEntitlementsConverter<SystemEntitlem
         return None;
     }
 
-    private void ValidateCountryCode(RegionInfo? country, Action<Error> addError)
+    private void ValidateCountryCode(CountryInfo? country, Action<Error> addError)
         => this.ValidateCountryCode(country?.TwoLetterISORegionName, addError);
 
     private void ValidateCountryCode(string? code, Action<Error> addError)
@@ -210,7 +210,7 @@ public class SystemEntitlementsConverter : IEntitlementsConverter<SystemEntitlem
 
         try
         {
-            _ = this.regionFactory.Create(code);
+            _ = this.countryFactory.Create(code);
         }
         catch (ArgumentException)
         {
