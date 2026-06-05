@@ -81,7 +81,7 @@ public class SystemEntitlementsConverterTests
         _ = validation.IfSuccess(x =>
         {
             _ = Assert.Single(x.CountryCodes);
-            Assert.Equal(country.TwoLetterISORegionName, x.CountryCodes.Single());
+            Assert.Equal(country.PrincipalRegion.TwoLetterISORegionName, x.CountryCodes.Single());
         });
     }
 

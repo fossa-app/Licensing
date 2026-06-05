@@ -79,7 +79,7 @@ public class SystemEntitlementsConverter : IEntitlementsConverter<SystemEntitlem
 
             result.CountryCodes.AddRange(
                 entitlements.Countries
-                    .Select(x => x.TwoLetterISORegionName));
+                    .Select(x => x.PrincipalRegion.TwoLetterISORegionName));
         }
 
         if (errors.Count > 0)
@@ -180,7 +180,7 @@ public class SystemEntitlementsConverter : IEntitlementsConverter<SystemEntitlem
     }
 
     private void ValidateCountryCode(CountryInfo? country, Action<Error> addError)
-        => this.ValidateCountryCode(country?.TwoLetterISORegionName, addError);
+        => this.ValidateCountryCode(country?.PrincipalRegion.TwoLetterISORegionName, addError);
 
     private void ValidateCountryCode(string? code, Action<Error> addError)
     {
